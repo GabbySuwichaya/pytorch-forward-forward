@@ -21,10 +21,36 @@ if __name__ == "__main__":
      
     batch_size = 5000
     sub_epoch  = 5000
-    lr = 0.001
-    checkpoint_path = "./weights/FF-MNIST-4layers-%d-%d-%f.pth" % (batch_size, sub_epoch, lr)
-    net = Net([784, 500, 500, 500, 500], num_class=10, lr=lr, sub_epochs_per_layer=sub_epoch) 
-    training = True
+    lr         = 0.001
+    num_layers = 3
+
+    if num_layers == 2:
+        net_list = [784, 500, 500]
+    
+    elif num_layers == 3:
+        net_list = [784, 500, 500, 500]
+    
+    elif num_layers == 4:
+        net_list = [784, 500, 500, 500, 500]
+
+    # My observations : 
+    # More layers === Higher error 
+    # Lower batch size ==> Higher error
+    # lower sub_epoch  ==> Higher error 
+    # Higher learning rate ==> Higher error
+    
+
+    if lr == 0.03:
+        checkpoint_path = "./weights/FF-MNIST-%dlayers-%d-%d.pth" % (num_layers, batch_size, sub_epoch, lr)
+    else:
+        checkpoint_path = "./weights/FF-MNIST-%dlayers-%d-%d-%f.pth" % (num_layers,  batch_size, sub_epoch, lr)
+
+
+
+        
+    net = Net(net_list, num_class=10, lr=lr, sub_epochs_per_layer=sub_epoch) 
+
+    training = False
 
     if training: 
         net.train()

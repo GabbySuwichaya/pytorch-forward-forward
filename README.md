@@ -4,6 +4,14 @@
 - Put customized dataloader into `Data/customized_MNIST.py`
 - You can train/test by runing `python my_train.py`
 
+### My observations : 
+
+- Default implementation == similar to the orignal implementation (which I still keep it as `main.py`) ... 
+- More layers === Higher error 
+- Lower batch size ==> Higher error
+- lower sub_epoch  ==> Higher error 
+- Higher learning rate ==> Higher error
+
 
 # pytorch_forward_forward
 Implementation of forward-forward (FF) training algorithm - an alternative to back-propagation
