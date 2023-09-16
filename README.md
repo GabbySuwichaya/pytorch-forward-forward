@@ -1,17 +1,20 @@
 # My adjustment
 
-- Put FF algorithm into `Models/ff_model.py`
-- Put customized dataloader into `Data/customized_MNIST.py`
-- You can train/test by runing `python my_train.py`
+- [x] Put FF algorithm into `Models/ff_model.py`
+- [x] Put customized dataloader into `Data/customized_MNIST.py`
+- [x] You can now train/test by runing `python my_train.py`
+- [x] In `python my_train.py` (as well as `Models/ff_model.py`) you can choose a new option to sampling the negative samples (`sampling_neg = 'rand' | 'perm'`). 
+    - `rand` is the new option that we added. It turns out that this process reduce the error when using low batch size, e.g. batch size = 128,512, 1024 from more than 0.8 to ~ 0.14, 0.10, 0.08.
+    - `perm` is from the original implementation, which is kept as a reference  
+- [ ] Provide some testing across different variations/settings. 
 
 ### My observations : 
 
-- Default implementation == similar to the orignal implementation (which I still keep it as `main.py`) ... 
-- More layers === Higher error 
-- Lower batch size ==> Higher error
+- More layers ==> Higher error 
+- Lower batch size ==> Higher error (I observe that this is a big problem in the original implementation, but we add a new option (`rand`) which fix most of this.)
 - lower sub_epoch  ==> Higher error 
-- Higher learning rate ==> Higher error
-
+- Higher learning rate ==> Higher error 
+- **As the reference,** the orignal implementation is still kept as `main.py` ... 
 
 # pytorch_forward_forward
 Implementation of forward-forward (FF) training algorithm - an alternative to back-propagation

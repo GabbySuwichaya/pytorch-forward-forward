@@ -29,11 +29,12 @@ class Layer(nn.Linear):
 
 class Net(torch.nn.Module):
 
-    def __init__(self, dims, num_class=10, lr=0.03, sub_epochs_per_layer=10):
+    def __init__(self, dims, num_class=10, lr=0.03, sub_epochs_per_layer=10, sampling_neg="rand"):
         super().__init__() 
 
         self.layer_id = 0
         self.num_class = num_class
+        self.sampling_neg = sampling_neg # "perm" or "rand"
 
         self.threshold = 2.0
         self.sub_epochs_per_layer = sub_epochs_per_layer
@@ -78,12 +79,15 @@ class Net(torch.nn.Module):
         x_max  = x.max(dim=1).values
         B      = y.shape
         
-        permute_rand =  torch.randperm(x.size(0))
-        y_neg        = y[permute_rand]
-        # p       = torch.rand(B,1).to(y.device)  
-        # y_rand_ = torch.randint(0, self.num_class, (B, 1)).to(y.device)    
-        # y_neg   = y_rand_ + (p > 0.5)*(y_rand_ == y)*1.0 - (p <= 0.5)*(y_rand_ == y)*1.0    
-        # y_neg   = (y_neg % self.num_class).int()
+        if self.sampling_neg == "perm": 
+            permute_rand =  torch.randperm(x.size(0))
+            y_neg        = y[permute_rand]
+
+        elif self.sampling_neg == "rand":
+            p       = torch.rand(B).to(y.device)  
+            y_rand_ = torch.randint(0, self.num_class, (B)).to(y.device)    
+            y_neg   = y_rand_ + (p > 0.5)*(y_rand_ == y)*1.0 - (p <= 0.5)*(y_rand_ == y)*1.0    
+            y_neg   = (y_neg % self.num_class).int()
  
         # x_pos.shape = # BxN  
         x_pos = self.generate_overlay_perlabel(x, y,     x_max,  num_class=self.num_class)

@@ -17,12 +17,25 @@ def visualize_sample(data, name='', idx=0):
     plt.show()
     
     
-if __name__ == "__main__":
-     
-    batch_size = 5000
-    sub_epoch  = 5000
-    lr         = 0.001
+if __name__ == "__main__": 
+
+    # My adjustment: 
+    # sampling_neg == 'rand' is the new option that I create to randomly generate the GT negative sample. 
+    # This is because the original "perm" option forces us to use the high batch size for high variety when sampling. 
+    # 
+    # It turns out that this process reduce the error at the lower batch size (from 0.8 to about 0.08)
+    #
+    # More layers ==> Higher error 
+    # Lower batch size ==> Higher error
+    # lower sub_epoch  ==> Higher error 
+    # Higher learning rate ==> Higher error
+    
+    batch_size = 1024
+    sub_epoch  = 1000
+    lr         = 0.01
     num_layers = 3
+
+    sampling_neg = "rand" # | "perm"
 
     if num_layers == 2:
         net_list = [784, 500, 500]
@@ -33,24 +46,18 @@ if __name__ == "__main__":
     elif num_layers == 4:
         net_list = [784, 500, 500, 500, 500]
 
-    # My observations : 
-    # More layers === Higher error 
-    # Lower batch size ==> Higher error
-    # lower sub_epoch  ==> Higher error 
-    # Higher learning rate ==> Higher error
-    
+
+    # ===========================================================================================================================
 
     if lr == 0.03:
-        checkpoint_path = "./weights/FF-MNIST-%dlayers-%d-%d.pth" % (num_layers, batch_size, sub_epoch, lr)
+        checkpoint_path = "./weights/FF-MNIST-%s-%dlayers-%d-%d.pth" % (sampling_neg, num_layers, batch_size, sub_epoch, lr)
     else:
-        checkpoint_path = "./weights/FF-MNIST-%dlayers-%d-%d-%f.pth" % (num_layers,  batch_size, sub_epoch, lr)
+        checkpoint_path = "./weights/FF-MNIST-%s-%dlayers-%d-%d-%f.pth" % (sampling_neg, num_layers,  batch_size, sub_epoch, lr)
 
+ 
+    net = Net(net_list, num_class=10, lr=lr, sub_epochs_per_layer=sub_epoch, sampling_neg=sampling_neg) 
 
-
-        
-    net = Net(net_list, num_class=10, lr=lr, sub_epochs_per_layer=sub_epoch) 
-
-    training = False
+    training = True
 
     if training: 
         net.train()
