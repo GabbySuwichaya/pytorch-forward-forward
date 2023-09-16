@@ -1,3 +1,10 @@
+# My adjustment
+
+- Put FF algorithm into `Models/ff_model.py`
+- Put customized dataloader into `Data/customized_MNIST.py`
+- You can train/test by runing `python my_train.py`
+
+
 # pytorch_forward_forward
 Implementation of forward-forward (FF) training algorithm - an alternative to back-propagation
 ---
